@@ -80,24 +80,43 @@ int main()
             (Rectangle){p1.posX, p1.posY, p1.width, p1.height},
             (Rectangle){p2.posX, p2.posY, p2.width, p2.height}))
         {
-            float overlap = 0;
-            
-            if (p1.posX < p2.posX) overlap = (p1.posX + p1.width) - p2.posX;
-            else overlap = (p2.posX + p2.width) - p1.posX;
+            float p1ONp2 = (p1.posY + p1.height) - p2.posY;
+            float p2ONp1 = (p2.posY + p2.height) - p1.posY;
 
-            if (overlap > 0)
+            if (p1.velocity >= 0 && p1ONp2 > 0 && p1ONp2 < p1.height/2)
             {
-                float pushDistance = overlap*0.5;
-                
-                if (p1.posX < p2.posX)
+                p1.posY = p2.posY - p1.height;
+                p1.velocity = 0;
+                p1.isJumping = false;
+            }
+            else if (p2.velocity >= 0 && p2ONp1 > 0 && p2ONp1 < p2.height/2)
+            {
+                p2.posY = p1.posY - p2.height;
+                p2.velocity = 0;
+                p2.isJumping = false;
+            }
+            
+            else
+            {
+                float overlap = 0;
+            
+                if (p1.posX < p2.posX) overlap = (p1.posX + p1.width) - p2.posX;
+                else overlap = (p2.posX + p2.width) - p1.posX;
+
+                if (overlap > 0)
                 {
-                    p1.posX -= pushDistance;
-                    p2.posX += pushDistance;
-                }
-                else
-                {
-                    p1.posX += pushDistance;
-                    p2.posX -= pushDistance;
+                    float pushDistance = overlap*0.5;
+                    
+                    if (p1.posX < p2.posX)
+                    {
+                        p1.posX -= pushDistance;
+                        p2.posX += pushDistance;
+                    }
+                    else
+                    {
+                        p1.posX += pushDistance;
+                        p2.posX -= pushDistance;
+                    }
                 }
             }
         }
