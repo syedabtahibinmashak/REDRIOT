@@ -39,8 +39,8 @@ int main()
         if(IsKeyPressed(KEY_ESCAPE)) CloseWindow();
         
 
-        if(IsKeyDown(KEY_RIGHT) && p1.posX + p1.width < windowWidth) p1.posX += p1.speed;
-        if(IsKeyDown(KEY_LEFT) && p1.posX > 0) p1.posX -= p1.speed;
+        if(IsKeyDown(KEY_RIGHT)) p1.posX += p1.speed;
+        if(IsKeyDown(KEY_LEFT)) p1.posX -= p1.speed;
         
         if(IsKeyPressed(KEY_UP) && !p1.isJumping)
         {
@@ -57,8 +57,8 @@ int main()
             p1.isJumping = false;
         }
 
-        if(IsKeyDown(KEY_D) && p2.posX + p2.width < windowWidth) p2.posX += p2.speed;
-        if(IsKeyDown(KEY_A) && p2.posX > 0) p2.posX -= p2.speed;
+        if(IsKeyDown(KEY_D)) p2.posX += p2.speed;
+        if(IsKeyDown(KEY_A)) p2.posX -= p2.speed;
         
         if(IsKeyPressed(KEY_W) && !p2.isJumping)
         {
@@ -75,6 +75,39 @@ int main()
             p2.isJumping = false;
         }
 
+
+        if (CheckCollisionRecs(
+            (Rectangle){p1.posX, p1.posY, p1.width, p1.height},
+            (Rectangle){p2.posX, p2.posY, p2.width, p2.height}))
+        {
+            float overlap = 0;
+            
+            if (p1.posX < p2.posX) overlap = (p1.posX + p1.width) - p2.posX;
+            else overlap = (p2.posX + p2.width) - p1.posX;
+
+            if (overlap > 0)
+            {
+                float pushDistance = overlap*0.5;
+                
+                if (p1.posX < p2.posX)
+                {
+                    p1.posX -= pushDistance;
+                    p2.posX += pushDistance;
+                }
+                else
+                {
+                    p1.posX += pushDistance;
+                    p2.posX -= pushDistance;
+                }
+            }
+        }
+
+        if (p1.posX < 0) p1.posX = 0;
+        if (p2.posX < 0) p2.posX = 0;
+        if (p1.posX + p1.width > windowWidth) p1.posX = windowWidth - p1.width;
+        if (p2.posX + p2.width > windowWidth) p2.posX = windowWidth - p2.width;
+
+        
         BeginDrawing();
         {
             ClearBackground(BLACK);
